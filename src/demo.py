@@ -1,6 +1,10 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+import sys
+
+from scipy.optimize._lsq.common import reflective_transformation
+sys.path.append("./DCNv2")
 
 import _init_paths
 
@@ -45,19 +49,23 @@ def demo(opt):
   out = None
   out_name = opt.demo[opt.demo.rfind('/') + 1:]
   print('out_name', out_name)
+  opt.save_video = True
   if opt.save_video:
     # fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    fourcc = cv2.VideoWriter_fourcc(*'H264')
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
     out = cv2.VideoWriter('../results/{}.mp4'.format(
       opt.exp_id + '_' + out_name),fourcc, opt.save_framerate, (
         opt.video_w, opt.video_h))
-  
+    if out == None:
+      raise Exception("video writer is none")
+    
   if opt.debug < 5:
     detector.pause = False
   cnt = 0
   results = {}
 
   while True:
+    
       if is_video:
         _, img = cam.read()
         if img is None:
@@ -68,7 +76,7 @@ def demo(opt):
         else:
           save_and_exit(opt, out, results, out_name)
       cnt += 1
-
+      
       # resize the original video for saving video results
       if opt.resize_video:
         img = cv2.resize(img, (opt.video_w, opt.video_h))
@@ -77,11 +85,11 @@ def demo(opt):
       if cnt < opt.skip_first:
         continue
       
-      cv2.imshow('input', img)
+      #deleted for colab
+      #cv2.imshow('input', img)
 
       # track or detect the image.
       ret = detector.run(img)
-
       # log run time
       time_str = 'frame {} |'.format(cnt)
       for stat in time_stats:
@@ -91,7 +99,7 @@ def demo(opt):
       # results[cnt] is a list of dicts:
       #  [{'bbox': [x1, y1, x2, y2], 'tracking_id': id, 'category_id': c, ...}]
       results[cnt] = ret['results']
-
+      #print(results[cnt])
       # save debug image to video
       if opt.save_video:
         out.write(ret['generic'])

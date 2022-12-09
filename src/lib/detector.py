@@ -139,7 +139,7 @@ class Detector(object):
     torch.cuda.synchronize()
     end_time = time.time()
     merge_time += end_time - post_process_time
-    
+   
     if self.opt.tracking:
       # public detection mode in MOT challenge
       public_det = meta['cur_dets'] if self.opt.public_det else None
@@ -150,9 +150,11 @@ class Detector(object):
     tracking_time = time.time()
     track_time += tracking_time - end_time
     tot_time += tracking_time - start_time
-
+    
     if self.opt.debug >= 1:
+      # comment for colab
       self.show_results(self.debugger, image, results)
+      print("no showing result")
     self.cnt += 1
 
     show_results_time = time.time()
@@ -450,6 +452,7 @@ class Detector(object):
       debugger.save_all_imgs(self.opt.debug_dir, prefix='{}'.format(self.cnt))
     else:
       debugger.show_all_imgs(pause=self.pause)
+      print("check point")
   
 
   def reset_tracking(self):

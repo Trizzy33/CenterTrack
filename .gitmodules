@@ -12,3 +12,6 @@
 	path = src/lib/model/networks/DCNv2
 	url = https://github.com/CharlesShang/DCNv2/
 	branch = master
+[submodule "DCNv2"]
+	path = DCNv2
+	url = https://github.com/CharlesShang/DCNv2/
